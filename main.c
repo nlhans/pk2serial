@@ -54,7 +54,7 @@ int vendor  = 0x04d8;
 int product = 0x0033;
 
 // PICKIT2 connect settings
-float voltage_output = 3.3f;
+float voltage_output = 0.0f;
 int reset_on_connect = 0;
 int baudrate = 9600;
 
@@ -461,10 +461,6 @@ pk2Open(PyObject *self, PyObject *args)
                     RAISE_ERROR("[pk2serial] Can't claim interface.\n");
                     return PyLong_FromLong(0);
                 }
-                if (-1 == fcntl(input_fd, F_SETFL, O_NONBLOCK))  {
-                    RAISE_ERROR("Can't set input_fd O_NONBLOCK.\n");
-                    return PyLong_FromLong(0);
-                }
                 LOG("[pk2serial] Found pickit2\n");
                 handleOpen = 1;
             }
@@ -495,9 +491,12 @@ pk2Open(PyObject *self, PyObject *args)
         uart_on(baudrate);
 
         LOG("[pk2serial] Opened port\n");
+    	return PyLong_FromLong(1);
     }
-
-    return PyLong_FromLong(1);
+    else
+    {
+        return PyLong_FromLong(0);
+    }
 }
 
 int
